@@ -3,87 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova Space Ultimate</title>
+    <title>Nova Space Pro</title>
     <style>
-        :root { --p: #ff4757; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        :root { --p: #ff4757; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --side: #1e293b; }
+        .light-theme { --bg: #f1f5f9; --card: #ffffff; --text: #1e293b; --side: #e2e8f0; }
         
-        header { background: var(--card); padding: 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; border-bottom: 1px solid #334155; }
-        .container { width: 100%; max-width: 550px; margin: 0 auto; padding: 15px; flex: 1; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; transition: 0.3s; }
         
-        .card { background: var(--card); padding: 15px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #334155; }
-        input, textarea { width: 100%; padding: 12px; margin: 5px 0; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; outline: none; }
-        .btn { background: var(--p); color: white; border: none; padding: 12px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: bold; margin-top: 5px; }
-        
-        .tabs { display: flex; gap: 8px; margin-bottom: 15px; background: #1e293b; padding: 5px; border-radius: 15px; }
-        .tab-btn { flex: 1; padding: 10px; border: none; background: none; color: #94a3b8; border-radius: 12px; cursor: pointer; font-weight: 600; }
-        .tab-btn.active { background: var(--p); color: white; }
-        
-        .post { background: var(--card); border-radius: 20px; padding: 15px; margin-bottom: 15px; border: 1px solid #334155; animation: fadeIn 0.3s ease; }
-        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-        .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: #334155; border: 2px solid var(--p); cursor: pointer; }
-        .post-img { width: 100%; border-radius: 15px; margin-top: 10px; border: 1px solid #334155; }
-        
-        .badge { background: #3b82f6; font-size: 11px; padding: 2px 8px; border-radius: 20px; margin-left: 5px; vertical-align: middle; }
-        .hidden { display: none !important; }
-        .admin-btn { color: #ef4444; background: none; border: none; font-size: 12px; cursor: pointer; float: right; }
+        /* Sidebar */
+        .sidebar { width: 260px; background: var(--side); height: 100vh; position: sticky; top: 0; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-right: 1px solid #334155; }
+        .nav-btn { background: none; border: none; color: var(--text); padding: 12px; text-align: left; cursor: pointer; border-radius: 10px; font-size: 16px; margin-bottom: 5px; transition: 0.2s; }
+        .nav-btn:hover, .nav-btn.active { background: var(--p); color: white; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Main Content */
+        .main { flex: 1; display: flex; justify-content: center; padding: 20px; }
+        .container { width: 100%; max-width: 600px; }
+        
+        .card { background: var(--card); padding: 20px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #334155; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 12px; border: 1px solid #334155; background: var(--bg); color: var(--text); box-sizing: border-box; }
+        .btn { background: var(--p); color: white; border: none; padding: 12px; width: 100%; border-radius: 12px; cursor: pointer; font-weight: bold; }
+        
+        .post { background: var(--card); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid #334155; }
+        .post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--p); cursor: pointer; }
+        .post-img { width: 100%; border-radius: 15px; margin-top: 10px; }
+        
+        .badge { background: #3b82f6; font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid #334155; padding: 10px; }
+            .sidebar { flex-direction: row; overflow-x: auto; }
+        }
     </style>
 </head>
-<body>
+<body id="body">
 
-<header>
-    <div style="font-weight: 900; letter-spacing: 1px;">NOVA <span id="lvlDisplay" style="color:var(--p)"></span></div>
-    <div id="headerActions" class="hidden">
-        <button onclick="signOutUser()" style="color:#94a3b8; background:none; border:none; cursor:pointer">Выход</button>
+<div class="sidebar" id="sidebar">
+    <h2 style="color:var(--p); margin-bottom: 20px;">NOVA PRO</h2>
+    <button class="nav-btn active" onclick="showSection('feed')">🏠 Главная</button>
+    <button class="nav-btn" onclick="showSection('popular')">🔥 Популярное</button>
+    <button class="nav-btn" onclick="showSection('chats')">📩 Сообщения</button>
+    <button class="nav-btn" onclick="showSection('settings')">⚙️ Настройки</button>
+    <div style="margin-top: auto;">
+        <p id="lvlInfo" style="font-size: 12px; opacity: 0.7;">Загрузка профиля...</p>
+        <button class="nav-btn" style="width:100%" onclick="signOutUser()">🚪 Выйти</button>
     </div>
-</header>
+</div>
 
-<div class="container">
-    <div id="authBox" class="card">
-        <h2 style="margin-top:0">Добро пожаловать</h2>
-        <input type="email" id="email" placeholder="Электронная почта">
-        <input type="password" id="pass" placeholder="Пароль">
-        <button class="btn" onclick="handleAuth('login')">Войти</button>
-        <button class="btn" style="background:transparent; border: 1px solid #334155" onclick="handleAuth('reg')">Регистрация</button>
-    </div>
-
-    <div id="app" class="hidden">
-        <div class="tabs">
-            <button class="tab-btn active" id="btn-feed" onclick="setTab('feed')">Лента</button>
-            <button class="tab-btn" id="btn-chats" onclick="setTab('chats')">Чаты</button>
-            <button class="tab-btn" id="btn-profile" onclick="setTab('profile')">Профиль</button>
+<div class="main">
+    <div class="container">
+        <div id="authBox" class="card">
+            <h2>Вход в Nova</h2>
+            <input type="email" id="email" placeholder="Email">
+            <input type="password" id="pass" placeholder="Пароль">
+            <button class="btn" onclick="handleAuth('login')">Войти</button>
+            <button class="btn" style="background:none; margin-top:10px" onclick="handleAuth('reg')">Нет аккаунта? Регистрация</button>
         </div>
 
-        <div id="view-feed">
-            <div class="card">
-                <textarea id="postMsg" placeholder="Что нового?"></textarea>
-                <div style="display:flex; gap:10px">
-                    <input type="file" id="postImg" style="font-size:12px; border:none; background:none">
-                    <button class="btn" style="width:120px" onclick="sendNewPost()">Пост</button>
+        <div id="app" class="hidden">
+            <div id="sec-feed">
+                <div class="card">
+                    <textarea id="postMsg" placeholder="Что нового?"></textarea>
+                    <input type="file" id="postImg">
+                    <button class="btn" onclick="sendNewPost()">Опубликовать</button>
+                </div>
+                <div id="feedList"></div>
+            </div>
+
+            <div id="sec-popular" class="hidden">
+                <h3>🔥 Самые популярные посты</h3>
+                <div id="popularList"></div>
+            </div>
+
+            <div id="sec-settings" class="hidden">
+                <div class="card">
+                    <h3>Ваш профиль</h3>
+                    <img id="myAv" class="avatar" style="width:80px; height:80px">
+                    <p id="myName">User</p>
+                    <input type="file" id="newAvFile">
+                    <button class="btn" onclick="saveAvatar()">Обновить фото</button>
+                    <hr style="margin: 20px 0; border: 0; border-top: 1px solid #444;">
+                    <h3>Тема оформления</h3>
+                    <button class="btn" style="background:#334155" onclick="setTheme('dark')">Тёмная</button>
+                    <button class="btn" style="background:#fff; color:#000; margin-top:5px" onclick="setTheme('light')">Светлая</button>
                 </div>
             </div>
-            <div id="feedList"></div>
-        </div>
 
-        <div id="view-profile" class="hidden">
-            <div class="card" style="text-align: center;">
-                <img id="myAvatar" class="avatar" style="width:120px; height:120px; margin-bottom:15px">
-                <h2 id="myUser">User</h2>
-                <p style="color:#94a3b8">Опыт: <span id="myXP">0</span> XP</p>
-                <hr style="border:0; border-top:1px solid #334155; margin:20px 0">
-                <label style="font-size:13px; color:#94a3b8">Изменить аватар:</label>
-                <input type="file" id="newAvatar">
-                <button class="btn" onclick="saveAvatar()">Сохранить фото</button>
-            </div>
-        </div>
-
-        <div id="view-chats" class="hidden">
-            <div class="card">
-                <h3>Твои сообщения</h3>
-                <p style="color:#94a3b8; font-size:14px">Чтобы начать чат, нажми на аватар пользователя в ленте.</p>
-                <div id="chatHistory"></div>
+            <div id="sec-chats" class="hidden">
+                <h3>📩 Ваши переписки</h3>
+                <div id="chatHistory">Нажмите на аватар пользователя в ленте, чтобы начать чат.</div>
             </div>
         </div>
     </div>
@@ -92,7 +102,7 @@
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, limit, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, orderBy, onSnapshot, serverTimestamp, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyCWfc3TzdVLaiwOhUrEfDaGsEHrUInzuJM",
@@ -111,123 +121,109 @@
 
     let profile = null;
 
-    // ВХОД / РЕГА
-    window.handleAuth = (type) => {
-        const e = document.getElementById('email').value;
-        const p = document.getElementById('pass').value;
-        if(type === 'reg') createUserWithEmailAndPassword(auth, e, p).catch(a => alert(a.message));
-        else signInWithEmailAndPassword(auth, e, p).catch(a => alert(a.message));
+    // СМЕНА РАЗДЕЛОВ
+    window.showSection = (name) => {
+        ['feed', 'popular', 'settings', 'chats'].forEach(s => {
+            document.getElementById('sec-'+s).classList.add('hidden');
+        });
+        document.getElementById('sec-'+name).classList.remove('hidden');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        event.target.classList.add('active');
     };
 
+    // ТЕМЫ
+    window.setTheme = (t) => {
+        if(t === 'light') document.getElementById('body').classList.add('light-theme');
+        else document.getElementById('body').classList.remove('light-theme');
+    };
+
+    // АВТОРИЗАЦИЯ
+    window.handleAuth = (t) => {
+        const e = document.getElementById('email').value;
+        const p = document.getElementById('pass').value;
+        if(t === 'reg') createUserWithEmailAndPassword(auth, e, p);
+        else signInWithEmailAndPassword(auth, e, p);
+    };
     window.signOutUser = () => signOut(auth);
 
     onAuthStateChanged(auth, async (u) => {
         if(u) {
             const d = await getDoc(doc(db, "users", u.uid));
-            if(!d.exists()) {
-                profile = { name: u.email.split('@')[0], xp: 0, avatar: "https://via.placeholder.com/150", role: 'user' };
-                await setDoc(doc(db, "users", u.uid), profile);
-            } else {
-                profile = d.data();
-            }
+            profile = d.exists() ? d.data() : { name: u.email.split('@')[0], xp: 0, avatar: "https://via.placeholder.com/150" };
+            if(!d.exists()) await setDoc(doc(db, "users", u.uid), profile);
             initApp();
         } else {
             document.getElementById('authBox').classList.remove('hidden');
             document.getElementById('app').classList.add('hidden');
-            document.getElementById('headerActions').classList.add('hidden');
         }
     });
 
     function initApp() {
         document.getElementById('authBox').classList.add('hidden');
         document.getElementById('app').classList.remove('hidden');
-        document.getElementById('headerActions').classList.remove('hidden');
-        document.getElementById('myAvatar').src = profile.avatar;
-        document.getElementById('myUser').innerText = profile.name;
-        document.getElementById('myXP').innerText = profile.xp;
-        document.getElementById('lvlDisplay').innerText = `[LVL ${Math.floor(profile.xp/100)}]`;
+        document.getElementById('myAv').src = profile.avatar;
+        document.getElementById('myName').innerText = profile.name;
+        document.getElementById('lvlInfo').innerText = `Профиль: ${profile.name} | XP: ${profile.xp}`;
         loadFeed();
+        loadPopular();
     }
-
-    window.setTab = (t) => {
-        ['feed', 'profile', 'chats'].forEach(v => {
-            document.getElementById('view-'+v).classList.add('hidden');
-            document.getElementById('btn-'+v).classList.remove('active');
-        });
-        document.getElementById('view-'+t).classList.remove('hidden');
-        document.getElementById('btn-'+t).classList.add('active');
-    };
 
     window.sendNewPost = async () => {
         const txt = document.getElementById('postMsg').value;
         const file = document.getElementById('postImg').files[0];
-        let imgUrl = "";
-
-        if(!txt && !file) return;
-
+        let img = "";
         if(file) {
             const fd = new FormData(); fd.append("image", file);
-            const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {method:"POST", body:fd});
-            const j = await res.json(); imgUrl = j.data.url;
+            const r = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {method:"POST", body:fd});
+            const j = await r.json(); img = j.data.url;
         }
-
-        await addDoc(collection(db, "posts"), {
-            txt, img: imgUrl, uid: auth.currentUser.uid, 
-            uName: profile.name, uAv: profile.avatar, 
-            xp: profile.xp, time: serverTimestamp()
-        });
-
+        await addDoc(collection(db, "posts"), { txt, img, uName: profile.name, uAv: profile.avatar, xp: profile.xp, time: serverTimestamp(), likes: 0 });
         await updateDoc(doc(db, "users", auth.currentUser.uid), { xp: profile.xp + 10 });
-        document.getElementById('postMsg').value = "";
-        document.getElementById('postImg').value = "";
+        location.reload();
     };
 
     function loadFeed() {
-        const q = query(collection(db, "posts"), orderBy("time", "desc"), limit(25));
-        onSnapshot(q, s => {
-            const list = document.getElementById('feedList');
-            list.innerHTML = "";
-            s.forEach(res => {
-                const p = res.data();
-                list.innerHTML += `
-                    <div class="post">
-                        ${profile.role === 'admin' ? `<button class="admin-btn" onclick="delPost('${res.id}')">Удалить</button>` : ''}
-                        <div class="post-header">
-                            <img src="${p.uAv}" class="avatar" onclick="startChat('${p.uid}', '${p.uName}')">
-                            <div>
-                                <b>${p.uName}</b> <span class="badge">${p.xp} XP</span>
-                            </div>
-                        </div>
-                        <div style="word-wrap: break-word;">${p.txt}</div>
-                        ${p.img ? `<img src="${p.img}" class="post-img">` : ''}
-                    </div>`;
-            });
+        onSnapshot(query(collection(db, "posts"), orderBy("time", "desc"), limit(20)), s => {
+            renderList(s, 'feedList');
+        });
+    }
+
+    function loadPopular() {
+        onSnapshot(query(collection(db, "posts"), orderBy("xp", "desc"), limit(10)), s => {
+            renderList(s, 'popularList');
+        });
+    }
+
+    function renderList(s, elementId) {
+        const div = document.getElementById(elementId);
+        div.innerHTML = "";
+        s.forEach(res => {
+            const p = res.data();
+            div.innerHTML += `
+                <div class="post">
+                    <div class="post-header">
+                        <img src="${p.uAv}" class="avatar" onclick="openDM('${p.uName}')">
+                        <b>${p.uName} <span class="badge">${p.xp} XP</span></b>
+                    </div>
+                    <div>${p.txt}</div>
+                    ${p.img ? `<img src="${p.img}" class="post-img">` : ''}
+                </div>`;
         });
     }
 
     window.saveAvatar = async () => {
-        const file = document.getElementById('newAvatar').files[0];
-        if(!file) return;
+        const file = document.getElementById('newAvFile').files[0];
         const fd = new FormData(); fd.append("image", file);
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {method:"POST", body:fd});
-        const j = await res.json();
+        const r = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {method:"POST", body:fd});
+        const j = await r.json();
         await updateDoc(doc(db, "users", auth.currentUser.uid), { avatar: j.data.url });
         location.reload();
     };
 
-    window.startChat = (toId, toName) => {
-        if(toId === auth.currentUser.uid) return;
-        const msg = prompt(`Написать ${toName}:`);
-        if(msg) {
-            const cId = [auth.currentUser.uid, toId].sort().join("_");
-            addDoc(collection(db, "chats", cId, "messages"), {
-                sender: profile.name, text: msg, time: serverTimestamp()
-            });
-            alert("Сообщение отправлено!");
-        }
+    window.openDM = (name) => {
+        const m = prompt(`Сообщение для ${name}:`);
+        if(m) alert("Отправлено (в разработке база ЛС)");
     };
-
-    window.delPost = (id) => deleteDoc(doc(db, "posts", id));
 </script>
 </body>
 </html>
