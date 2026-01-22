@@ -3,50 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova Elite v17</title>
+    <title>Nova </title>
     <style>
-        :root { --p: #ff4757; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --side: #1e293b; --gold: #ffd700; }
+        :root { --p: #ff4757; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --side: #1e293b; --gold: #ffd700; --prem: #9b59b6; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; overflow-x: hidden; }
 
-        /* Layout */
-        .sidebar { width: 260px; background: var(--side); height: 100vh; position: fixed; left: 0; top: 0; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; border-right: 1px solid #334155; z-index: 1000; }
+        /* Ранги и Эффекты */
+        .lvl-local { color: #3498db !important; } /* Местный */
+        .lvl-old { color: #9b59b6 !important; text-shadow: 0 0 10px #9b59b6; } /* Олдовый */
+        .lvl-legend { background: linear-gradient(90deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #8f00ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: rainbow 3s linear infinite; font-weight: 900; }
+        @keyframes rainbow { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+        
+        .border-legend { border: 3px solid transparent !important; background: linear-gradient(var(--card), var(--card)) padding-box, linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet) border-box !important; animation: rainbow 3s linear infinite; }
+
+        .sidebar { width: 260px; background: var(--side); height: 100vh; position: fixed; left: 0; top: 0; padding: 20px; display: flex; flex-direction: column; border-right: 1px solid #334155; z-index: 1000; }
         .header { position: fixed; top: 0; right: 0; left: 260px; height: 65px; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); display: flex; align-items: center; justify-content: space-between; padding: 0 25px; border-bottom: 1px solid #334155; z-index: 900; }
         .main { flex: 1; margin-left: 260px; margin-top: 65px; padding: 20px; display: flex; justify-content: center; }
         .container { width: 100%; max-width: 650px; }
         
-        /* UI Elements */
         .card { background: var(--card); padding: 20px; border-radius: 24px; margin-bottom: 20px; border: 1px solid #334155; }
-        .nav-btn { background: none; border: none; color: var(--text); padding: 14px; text-align: left; cursor: pointer; border-radius: 16px; width: 100%; margin-bottom: 5px; display: flex; align-items: center; gap: 10px; font-size: 15px; transition: 0.2s; }
+        .nav-btn { background: none; border: none; color: var(--text); padding: 12px; text-align: left; cursor: pointer; border-radius: 14px; width: 100%; display: flex; align-items: center; gap: 10px; font-size: 14px; }
         .nav-btn:hover, .nav-btn.active { background: var(--p); color: white; }
         
-        .post { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid #334155; position: relative; }
-        .avatar { width: 50px; height: 50px; border-radius: 15px; object-fit: cover; border: 2px solid #334155; cursor: pointer; }
-        .gold-border { border: 3px solid var(--gold) !important; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+        /* Stories */
+        .stories-bar { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 10px; }
+        .story-item { min-width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--p); padding: 2px; cursor: pointer; }
+        .story-item img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
 
-        .btn-main { background: var(--p); color: white; border: none; padding: 16px; border-radius: 18px; cursor: pointer; font-weight: 900; width: 100%; text-transform: uppercase; box-shadow: 0 4px 15px rgba(255, 71, 87, 0.3); }
-        input, textarea { width: 100%; padding: 15px; margin: 10px 0; border-radius: 15px; border: 1px solid #334155; background: var(--bg); color: var(--text); box-sizing: border-box; outline: none; }
+        .btn-main { background: var(--p); color: white; border: none; padding: 14px; border-radius: 18px; cursor: pointer; font-weight: 900; width: 100%; }
+        .btn-direct { background: #2ecc71; color: white; border: none; padding: 8px 15px; border-radius: 10px; cursor: pointer; margin-top: 5px; }
+
+        .avatar { width: 50px; height: 50px; border-radius: 15px; object-fit: cover; border: 2px solid #334155; }
+        .post { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid #334155; position: relative; }
         
+        .notif-item { padding: 10px; border-bottom: 1px solid #334155; font-size: 13px; }
         .hidden { display: none !important; }
 
         @media (max-width: 768px) {
             .sidebar { width: 100%; height: 70px; flex-direction: row; top: auto; bottom: 0; padding: 5px; }
-            .header, .sidebar h2 { display: none; }
+            .header, .sidebar h2, .channel-head { display: none; }
             .main { margin-left: 0; margin-top: 0; margin-bottom: 80px; }
-            .nav-btn { flex-direction: column; font-size: 10px; gap: 2px; text-align: center; }
+            .nav-btn { flex-direction: column; font-size: 10px; text-align: center; }
         }
     </style>
 </head>
 <body>
 
 <div class="sidebar hidden" id="sidebar">
-    <h2 style="color:var(--p); margin-left: 10px;">NOVA</h2>
+    <h2 style="color:var(--p);">NOVA</h2>
     <button class="nav-btn active" id="btn-feed" onclick="showSec('feed')">🏠 Лента</button>
-    <button class="nav-btn" id="btn-popular" onclick="showSec('popular')">🔥 Популярное</button>
+    <button class="nav-btn" id="btn-popular" onclick="showSec('popular')">🔥 Тренды</button>
+    <button class="nav-btn" id="btn-notif" onclick="showSec('notif')">🔔 Уведомления</button>
+    <button class="nav-btn" id="btn-shop" onclick="showSec('shop')">🛒 Магазин</button>
     <button class="nav-btn" id="btn-chat" onclick="showSec('chat')">💬 Глобал</button>
     <button class="nav-btn" id="btn-profile" onclick="viewProfile()">👤 Профиль</button>
-    <div style="margin-top: auto; padding: 10px;">
-        <button onclick="logout()" style="color:gray; background:none; border:none; cursor:pointer; font-size:11px;">ВЫХОД</button>
-    </div>
+    <div style="margin-top: auto;"><button onclick="logout()" style="color:gray; background:none; border:none; cursor:pointer; font-size:11px;">ВЫХОД</button></div>
 </div>
 
 <div class="header hidden" id="header">
@@ -56,49 +67,70 @@
 
 <div class="main">
     <div class="container">
-        <div id="authBox" class="card" style="max-width:400px; margin: 80px auto; text-align:center">
-            <h1>Войти</h1>
+        <div id="authBox" class="card" style="max-width:400px; margin: 50px auto; text-align:center">
+            <h1 style="color:var(--p)">Nova Space</h1>
             <input type="email" id="email" placeholder="Email">
             <input type="password" id="pass" placeholder="Пароль">
             <button class="btn-main" onclick="authAction('login')">Войти</button>
-            <button class="nav-btn" style="justify-content:center; margin-top:10px" onclick="authAction('reg')">Нет аккаунта? Регистрация</button>
+            <button class="nav-btn" style="justify-content:center; margin-top:10px" onclick="authAction('reg')">Регистрация</button>
         </div>
 
         <div id="app" class="hidden">
+            <div class="stories-bar" id="storiesBar">
+                <div class="story-item" onclick="addStory()" style="border-style: dashed; display:flex; align-items:center; justify-content:center; font-size:24px">+</div>
+            </div>
+
             <div id="sec-feed">
                 <div class="card">
-                    <textarea id="postTxt" placeholder="Что нового?" rows="3"></textarea>
-                    <input type="file" id="postFile" style="font-size:12px">
-                    <button class="btn-main" onclick="sendPost()">ОПУБЛИКОВАТЬ ПОСТ</button>
+                    <textarea id="postTxt" placeholder="Что нового?" rows="2"></textarea>
+                    <input type="file" id="postFile" style="font-size:11px">
+                    <button class="btn-main" onclick="sendPost()">ОПУБЛИКОВАТЬ</button>
                 </div>
                 <div id="feedList"></div>
             </div>
 
-            <div id="sec-popular" class="hidden">
-                <div id="popularList"></div>
+            <div id="sec-notif" class="hidden card">
+                <h3>Уведомления</h3>
+                <div id="notifList"></div>
+            </div>
+
+            <div id="sec-shop" class="hidden card">
+                <h3>XP Магазин</h3>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px">
+                    <div class="card" style="text-align:center">👑 Корона <br> <button onclick="buyItem('👑', 500)">500 XP</button></div>
+                    <div class="card" style="text-align:center">🔥 Огонь <br> <button onclick="buyItem('🔥', 300)">300 XP</button></div>
+                    <div class="card" style="text-align:center">⚡ Молния <br> <button onclick="buyItem('⚡', 400)">400 XP</button></div>
+                </div>
             </div>
 
             <div id="sec-profile" class="hidden">
                 <div class="card" style="text-align:center">
-                    <div id="profileHeader">
-                        <img id="viewAv" class="avatar" style="width:120px; height:120px; border-radius:35px">
-                        <h2 id="viewName">Загрузка...</h2>
-                        <div style="display:flex; gap:25px; justify-content:center; margin:15px 0">
-                            <div><span style="display:block; font-weight:900; font-size:22px" id="countSub">0</span>подписчиков</div>
-                            <div><span style="display:block; font-weight:900; font-size:22px" id="countXP">0</span>XP</div>
-                        </div>
-                        <div id="profileActions"></div>
+                    <img id="viewAv" class="avatar" style="width:100px; height:100px;">
+                    <h2 id="viewName">Загрузка...</h2>
+                    <div id="viewBadge"></div>
+                    <div style="display:flex; gap:15px; justify-content:center; margin:10px">
+                        <div><b id="countSub">0</b> подписчиков</div>
+                        <div><b id="countXP">0</b> XP</div>
                     </div>
+                    <div id="profileActions"></div>
                 </div>
                 <div id="userPosts"></div>
             </div>
 
-            <div id="sec-chat" class="hidden">
-                <div class="card" id="chatBox" style="height:400px; overflow-y:auto; display:flex; flex-direction:column; gap:8px"></div>
-                <div style="display:flex; gap:10px">
-                    <input type="text" id="chatMsg" placeholder="Сообщение...">
-                    <button class="btn-main" style="width:80px" onclick="sendChat()">📡</button>
+            <div id="sec-direct" class="hidden card">
+                <button onclick="showSec('feed')">← Назад</button>
+                <h3 id="directWith">Чат</h3>
+                <div id="directBox" style="height:300px; overflow-y:auto; margin-bottom:10px"></div>
+                <div style="display:flex; gap:5px">
+                    <input type="text" id="directMsg" placeholder="Сообщение...">
+                    <button class="btn-main" style="width:70px" onclick="sendDirect()">📤</button>
                 </div>
+            </div>
+
+            <div id="sec-chat" class="hidden card">
+                <div id="chatBox" style="height:400px; overflow-y:auto;"></div>
+                <input type="text" id="chatMsg" placeholder="В общий чат...">
+                <button class="btn-main" onclick="sendChat()">ОТПРАВИТЬ</button>
             </div>
         </div>
     </div>
@@ -109,146 +141,141 @@
     import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
     import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, query, onSnapshot, serverTimestamp, limit, increment, arrayUnion, arrayRemove, where, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyCWfc3TzdVLaiwOhUrEfDaGsEHrUInzuJM",
-        authDomain: "doodle-102.firebaseapp.com",
-        projectId: "doodle-102",
-        storageBucket: "doodle-102.firebasestorage.app",
-        messagingSenderId: "296542303637",
-        appId: "1:296542303637:web:950b3cbe547c6d10f3f29c"
-    };
-
+    const firebaseConfig = { apiKey: "AIzaSyCWfc3TzdVLaiwOhUrEfDaGsEHrUInzuJM", authDomain: "doodle-102.firebaseapp.com", projectId: "doodle-102", storageBucket: "doodle-102.firebasestorage.app", messagingSenderId: "296542303637", appId: "1:296542303637:web:950b3cbe547c6d10f3f29c" };
     const IMGBB_KEY = "cfedaeb5c6bb179902b44ba10cb396cb";
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
 
-    let myProfile = null;
+    let myP = null; let curChatUid = null;
 
     window.showSec = (s) => {
-        ['feed','profile','chat','popular'].forEach(id => {
-            document.getElementById('sec-'+id).classList.add('hidden');
-            document.getElementById('btn-'+id)?.classList.remove('active');
-        });
+        ['feed','profile','chat','popular','notif','shop','direct'].forEach(id => document.getElementById('sec-'+id).classList.add('hidden'));
         document.getElementById('sec-'+s).classList.remove('hidden');
-        document.getElementById('btn-'+s)?.classList.add('active');
-        document.getElementById('headerTitle').innerText = s.toUpperCase();
     };
 
-    window.authAction = (t) => {
-        const e = document.getElementById('email').value, p = document.getElementById('pass').value;
-        if(t === 'reg') createUserWithEmailAndPassword(auth, e, p).catch(err => alert(err.message));
-        else signInWithEmailAndPassword(auth, e, p).catch(err => alert(err.message));
+    const getRankClass = (xp) => {
+        if(xp >= 5000) return 'lvl-legend';
+        if(xp >= 500) return 'lvl-old';
+        if(xp >= 100) return 'lvl-local';
+        return '';
     };
 
-    window.logout = () => signOut(auth);
-
-    onAuthStateChanged(auth, async (u) => {
+    onAuthStateChanged(auth, u => {
         if(u) {
-            onSnapshot(doc(db, "users", u.uid), (docSnap) => {
-                myProfile = docSnap.data();
-                if(!myProfile) return;
-                document.getElementById('xpBadge').innerText = myProfile.xp + " XP";
+            onSnapshot(doc(db, "users", u.uid), ds => {
+                myP = ds.data();
+                if(!myP) return;
+                document.getElementById('xpBadge').innerText = myP.xp + " XP";
                 ['sidebar','header','app'].forEach(id => document.getElementById(id).classList.remove('hidden'));
                 document.getElementById('authBox').classList.add('hidden');
             });
-            loadData();
-        } else {
-            document.getElementById('authBox').classList.remove('hidden');
-            ['sidebar','header','app'].forEach(id => document.getElementById(id).classList.add('hidden'));
-        }
+            loadGlobal();
+        } else { document.getElementById('authBox').classList.remove('hidden'); }
     });
 
     window.viewProfile = (uid = auth.currentUser.uid) => {
         showSec('profile');
-        onSnapshot(doc(db, "users", uid), (d) => {
+        onSnapshot(doc(db, "users", uid), d => {
             const u = d.data();
-            document.getElementById('viewAv').src = u.avatar;
-            document.getElementById('viewAv').className = `avatar ${u.xp >= 100 ? 'gold-border' : ''}`;
-            document.getElementById('viewName').innerText = u.name + (u.isVerified ? ' ✅' : '');
-            document.getElementById('countSub').innerText = u.subs ? u.subs.length : 0;
+            const av = document.getElementById('viewAv');
+            av.src = u.avatar;
+            av.className = `avatar ${u.xp >= 5000 ? 'border-legend' : (u.xp >= 100 ? 'gold-border' : '')}`;
+            
+            const nameE = document.getElementById('viewName');
+            nameE.innerText = u.name + (u.shopBadge || '');
+            nameE.className = getRankClass(u.xp);
+            
+            document.getElementById('countSub').innerText = u.subs?.length || 0;
             document.getElementById('countXP').innerText = u.xp;
             
             const acts = document.getElementById('profileActions');
             acts.innerHTML = "";
             if(uid !== auth.currentUser.uid) {
-                const isSub = u.subs?.includes(auth.currentUser.uid);
-                acts.innerHTML = `<button class="btn-main" style="width:auto; padding:10px 30px" onclick="toggleSub('${uid}', ${isSub})">${isSub ? 'ОТПИСАТЬСЯ' : 'ПОДПИСАТЬСЯ'}</button>`;
+                acts.innerHTML = `<button class="btn-main" onclick="toggleSub('${uid}')">ПОДПИСАТЬСЯ</button>
+                                  <button class="btn-direct" onclick="openDirect('${uid}', '${u.name}')">Написать сообщение</button>`;
             }
         });
-
-        onSnapshot(query(collection(db, "posts"), where("uid", "==", uid)), s => {
-            render(s.docs.sort((a,b) => (b.data().time?.seconds || 0) - (a.data().time?.seconds || 0)), 'userPosts');
-        });
+        onSnapshot(query(collection(db, "posts"), where("uid", "==", uid)), s => render(s.docs, 'userPosts'));
     };
 
-    window.toggleSub = async (targetUid, isSub) => {
-        await updateDoc(doc(db, "users", targetUid), { subs: isSub ? arrayRemove(auth.currentUser.uid) : arrayUnion(auth.currentUser.uid) });
+    window.toggleSub = async (tid) => {
+        await updateDoc(doc(db, "users", tid), { subs: arrayUnion(auth.currentUser.uid) });
+        await addDoc(collection(db, "notifs"), { to: tid, msg: `На вас подписался @${myP.name}`, time: serverTimestamp() });
     };
 
-    window.sendPost = async () => {
-        const txt = document.getElementById('postTxt').value, file = document.getElementById('postFile').files[0];
-        if(!txt && !file) return;
-        let img = "";
-        if(file) {
-            const fd = new FormData(); fd.append("image", file);
-            const r = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {method:"POST", body:fd});
-            const j = await r.json(); img = j.data.url;
-        }
-        await addDoc(collection(db, "posts"), { 
-            txt, img, uName: myProfile.name, uAv: myProfile.avatar, uXp: myProfile.xp,
-            uid: auth.currentUser.uid, likes: 0, likedBy: [], comments: [], time: serverTimestamp() 
-        });
-        await updateDoc(doc(db, "users", auth.currentUser.uid), { xp: increment(15) });
-        document.getElementById('postTxt').value = "";
-    };
-
-    function loadData() {
-        onSnapshot(query(collection(db, "posts"), limit(50)), s => {
-            const posts = s.docs.sort((a,b) => (b.data().time?.seconds || 0) - (a.data().time?.seconds || 0));
-            render(posts, 'feedList');
-            const popular = [...s.docs].sort((a,b) => (b.data().likes || 0) - (a.data().likes || 0)).filter(d => d.data().likes > 0);
-            render(popular, 'popularList');
-        });
-        onSnapshot(query(collection(db, "chat_global"), limit(30)), s => {
-            const div = document.getElementById('chatBox'); div.innerHTML = "";
-            s.docs.sort((a,b) => (a.data().time?.seconds || 0) - (b.data().time?.seconds || 0)).forEach(d => {
-                const c = d.data();
-                div.innerHTML += `<div style="padding:8px 12px; background:rgba(255,255,255,0.05); border-radius:12px; font-size:14px"><b>${c.u}:</b> ${c.t}</div>`;
+    window.openDirect = (uid, name) => {
+        curChatUid = uid;
+        document.getElementById('directWith').innerText = "Чат с " + name;
+        showSec('direct');
+        const q = query(collection(db, "direct"), where("chatId", "in", [auth.currentUser.uid + "_" + uid, uid + "_" + auth.currentUser.uid]));
+        onSnapshot(q, s => {
+            const div = document.getElementById('directBox'); div.innerHTML = "";
+            s.docs.sort((a,b) => a.data().time - b.data().time).forEach(d => {
+                const m = d.data();
+                div.innerHTML += `<div style="text-align:${m.from===auth.currentUser.uid?'right':'left'}"><b>${m.fromName}:</b> ${m.txt}</div>`;
             });
-            div.scrollTop = div.scrollHeight;
+        });
+    };
+
+    window.sendDirect = async () => {
+        const txt = document.getElementById('directMsg').value;
+        await addDoc(collection(db, "direct"), { chatId: auth.currentUser.uid + "_" + curChatUid, from: auth.currentUser.uid, fromName: myP.name, txt, time: serverTimestamp() });
+        document.getElementById('directMsg').value = "";
+    };
+
+    window.addStory = async () => {
+        const url = prompt("Введите ссылку на фото для истории:");
+        if(url) await addDoc(collection(db, "stories"), { url, uid: auth.currentUser.uid, uAv: myP.avatar, expires: Date.now() + 86400000 });
+    };
+
+    window.buyItem = async (emoji, price) => {
+        if(myP.xp >= price) {
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { xp: increment(-price), shopBadge: emoji });
+            alert("Куплено!");
+        } else alert("Мало XP!");
+    };
+
+    function loadGlobal() {
+        onSnapshot(collection(db, "posts"), s => render(s.docs.sort((a,b)=>b.data().time - a.data().time), 'feedList'));
+        onSnapshot(query(collection(db, "notifs"), where("to", "==", auth.currentUser.uid)), s => {
+            const div = document.getElementById('notifList'); div.innerHTML = "";
+            s.docs.forEach(d => div.innerHTML += `<div class="notif-item">${d.data().msg}</div>`);
+        });
+        onSnapshot(collection(db, "stories"), s => {
+            const bar = document.getElementById('storiesBar');
+            s.docs.forEach(d => {
+                if(d.data().expires > Date.now()) {
+                    bar.innerHTML += `<div class="story-item" onclick="alert('Смотрим историю...')"><img src="${d.data().url}"></div>`;
+                }
+            });
         });
     }
 
     function render(docs, id) {
         const div = document.getElementById(id); div.innerHTML = "";
         docs.forEach(d => {
-            const p = d.data(), pId = d.id, hasLiked = p.likedBy?.includes(auth.currentUser.uid);
-            div.innerHTML += `
-                <div class="post">
-                    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px">
-                        <img src="${p.uAv}" class="avatar ${p.uXp >= 100 ? 'gold-border' : ''}" onclick="viewProfile('${p.uid}')">
-                        <b onclick="viewProfile('${p.uid}')" style="cursor:pointer">${p.uName}</b>
-                    </div>
-                    <div>${p.txt}</div>
-                    ${p.img ? `<img src="${p.img}" style="width:100%; border-radius:15px; margin-top:10px">` : ''}
-                    <div style="margin-top:15px; display:flex; gap:20px">
-                        <button onclick="like('${pId}', ${hasLiked})" style="background:none; border:none; color:${hasLiked?'#ff4757':'gray'}; cursor:pointer; font-weight:bold">❤️ ${p.likes || 0}</button>
-                        <button onclick="addComm('${pId}')" style="background:none; border:none; color:gray; cursor:pointer">💬 ${p.comments?.length || 0}</button>
-                    </div>
-                </div>`;
+            const p = d.data();
+            div.innerHTML += `<div class="post">
+                <div style="display:flex; align-items:center; gap:10px">
+                    <img src="${p.uAv}" class="avatar" onclick="viewProfile('${p.uid}')">
+                    <b class="${getRankClass(p.uXp)}">${p.uName}</b>
+                </div>
+                <p>${p.txt}</p>
+                ${p.img ? `<img src="${p.img}" style="width:100%; border-radius:15px">` : ''}
+            </div>`;
         });
     }
 
-    window.like = async (id, hasLiked) => {
-        await updateDoc(doc(db, "posts", id), { likes: increment(hasLiked ? -1 : 1), likedBy: hasLiked ? arrayRemove(auth.currentUser.uid) : arrayUnion(auth.currentUser.uid) });
+    window.sendPost = async () => {
+        const txt = document.getElementById('postTxt').value;
+        await addDoc(collection(db, "posts"), { txt, uid: auth.currentUser.uid, uName: myP.name, uAv: myP.avatar, uXp: myP.xp, time: Date.now() });
+        await updateDoc(doc(db, "users", auth.currentUser.uid), { xp: increment(15) });
     };
 
-    window.sendChat = async () => {
-        const m = document.getElementById('chatMsg').value;
-        if(m) await addDoc(collection(db, "chat_global"), { u: myProfile.name, t: m, time: serverTimestamp() });
-        document.getElementById('chatMsg').value = "";
+    window.authAction = (t) => {
+        const e = document.getElementById('email').value, p = document.getElementById('pass').value;
+        if(t === 'reg') createUserWithEmailAndPassword(auth, e, p); else signInWithEmailAndPassword(auth, e, p);
     };
+    window.logout = () => signOut(auth);
 </script>
 </body>
 </html>
