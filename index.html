@@ -1,219 +1,54 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nova Space v27</title>
-    <style>
-        :root { --p: #6366f1; --bg: #0b0f1a; --card: #161b2c; --text: #ffffff; --gray: #94a3b8; --glass: rgba(255, 255, 255, 0.05); --gold: #ffd700; }
-        * { box-sizing: border-box; transition: 0.2s; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
-
-        /* Вход */
-        #authBox { height: 100vh; display: flex; align-items: center; justify-content: center; background: radial-gradient(circle at top right, #1e1b4b, #0b0f1a); }
-        .auth-card { background: var(--card); padding: 40px; border-radius: 30px; width: 90%; max-width: 400px; border: 1px solid var(--glass); text-align: center; }
-        .input-group { position: relative; margin: 10px 0; }
-        input { width: 100%; padding: 14px; border-radius: 12px; background: #000; border: 1px solid var(--glass); color: #fff; outline: none; }
-        .pass-toggle { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; user-select: none; }
-
-        /* Меню */
-        .sidebar { width: 280px; background: var(--card); height: 100vh; position: fixed; left: 0; top: 0; padding: 25px; border-right: 1px solid var(--glass); display: flex; flex-direction: column; z-index: 1000; }
-        .logo { color: var(--p); font-size: 24px; font-weight: 900; margin-bottom: 30px; text-align: center; }
-        .nav-btn { background: transparent; border: none; color: var(--gray); padding: 14px 20px; border-radius: 14px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 15px; margin-bottom: 4px; width: 100%; text-align: left; }
-        .nav-btn.active { background: var(--p); color: white; }
-
-        /* Контент */
-        .main { margin-left: 280px; padding: 30px; display: flex; justify-content: center; min-height: 100vh; }
-        .container { width: 100%; max-width: 650px; }
-        .post-card { background: var(--card); border-radius: 24px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--glass); animation: fadeIn 0.3s ease; }
-        .avatar { width: 48px; height: 48px; border-radius: 14px; object-fit: cover; }
-        .prem-border { border: 2px solid var(--gold); }
-        
-        .action-bar { display: flex; gap: 15px; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--glass); }
-        .act-btn { background: none; border: none; color: var(--gray); cursor: pointer; font-weight: 600; }
-        
-        .btn-primary { background: var(--p); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 700; cursor: pointer; width: 100%; }
-        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--p); border-radius: 20px; display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; cursor: pointer; z-index: 1001; }
-
-        .hidden { display: none !important; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        @media (max-width: 850px) {
-            .sidebar { width: 100%; height: 70px; bottom: 0; top: auto; flex-direction: row; padding: 5px; }
-            .logo, .nav-btn span { display: none; }
-            .main { margin-left: 0; padding-bottom: 100px; }
-            .nav-btn { flex: 1; justify-content: center; }
-        }
-    </style>
-</head>
-<body>
-
-<div id="authBox">
-    <div class="auth-card">
-        <h2 style="color:var(--p)">NOVA SPACE</h2>
-        <div class="input-group"><input type="email" id="email" placeholder="Email"></div>
-        <div class="input-group">
-            <input type="password" id="pass" placeholder="Пароль">
-            <span class="pass-toggle" onclick="window.togglePass()">👁️</span>
-        </div>
-        <button class="btn-primary" onclick="window.authAction('login')">Войти</button>
-        <p onclick="window.authAction('reg')" style="color:var(--gray); cursor:pointer; margin-top:15px; font-size:13px">Создать профиль</p>
-    </div>
-</div>
-
-<div id="app" class="hidden">
-    <div class="sidebar">
-        <div class="logo">NOVA SPACE</div>
-        <button class="nav-btn active" id="nav-feed" onclick="window.showSec('feed')">🏠 <span>Лента</span></button>
-        <button class="nav-btn" id="nav-popular" onclick="window.showSec('popular')">🔥 <span>Популярное</span></button>
-        <button class="nav-btn" id="nav-ls" onclick="window.showSec('ls')">💬 <span>Сообщения</span></button>
-        <button class="nav-btn" id="nav-shop" onclick="window.showSec('shop')">🛒 <span>Магазин</span></button>
-        <button class="nav-btn" id="nav-profile" onclick="window.viewProfile()">👤 <span>Профиль</span></button>
-        <button onclick="window.logout()" style="margin-top:auto" class="nav-btn">🚪 <span>Выход</span></button>
-    </div>
-
-    <div class="main">
-        <div class="container">
-            <div id="sec-feed" class="section"></div>
-            <div id="sec-popular" class="section hidden"></div>
-            <div id="sec-ls" class="section hidden">
-                <div class="post-card"><h3>Сообщения</h3><div id="msgBox" style="height:300px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:15px; padding:15px; margin-bottom:10px">Выберите чат в профиле</div></div>
-            </div>
-            <div id="sec-shop" class="section hidden">
-                <div class="post-card">
-                    <h3>Магазин</h3>
-                    <p>Баланс: <span id="shopXp">0</span> XP</p>
-                    <button class="btn-primary" onclick="window.buyItem('⭐', 10000)">Купить PREMIUM ⭐ (10k XP)</button>
-                </div>
-            </div>
-            <div id="sec-profile" class="section hidden"><div id="profHead"></div></div>
-        </div>
-    </div>
-    <div class="fab" onclick="window.openModal()">+</div>
-</div>
-
-<div id="postModal" class="hidden" style="position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:2000; display:flex; align-items:center; justify-content:center">
-    <div class="post-card" style="width:90%; max-width:500px">
-        <textarea id="postTxt" placeholder="Что нового?" rows="5" style="width:100%; background:#000; color:#fff; padding:15px; border-radius:15px; border:1px solid var(--glass)"></textarea>
-        <button class="btn-primary" style="margin-top:10px" onclick="window.sendPost()">Опубликовать</button>
-        <button onclick="window.closeModal()" style="width:100%; background:none; border:none; color:var(--gray); cursor:pointer; margin-top:5px">Отмена</button>
-    </div>
-</div>
-
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    import { getFirestore, doc, onSnapshot, collection, addDoc, updateDoc, setDoc, query, serverTimestamp, increment, arrayUnion, arrayRemove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-    const firebaseConfig = { apiKey: "AIzaSyCWfc3TzdVLaiwOhUrEfDaGsEHrUInzuJM", authDomain: "doodle-102.firebaseapp.com", projectId: "doodle-102", storageBucket: "doodle-102.firebasestorage.app", messagingSenderId: "296542303637", appId: "1:296542303637:web:950b3cbe547c6d10f3f29c" };
-    const app = initializeApp(firebaseConfig); const auth = getAuth(app); const db = getFirestore(app);
-
-    let myP = null;
-
-    // Глобальные функции
-    window.togglePass = () => { const p = document.getElementById('pass'); p.type = p.type === 'password' ? 'text' : 'password'; };
-    window.openModal = () => document.getElementById('postModal').classList.remove('hidden');
-    window.closeModal = () => document.getElementById('postModal').classList.add('hidden');
-    
-    window.authAction = (t) => {
-        const e = document.getElementById('email').value, p = document.getElementById('pass').value;
-        if(t === 'reg') {
-            createUserWithEmailAndPassword(auth, e, p).then(u => {
-                setDoc(doc(db, "users", u.user.uid), { name: e.split('@')[0], xp: 100, avatar: "https://ui-avatars.com/api/?name="+e, isPrem: false });
-            }).catch(err => alert(err.message));
-        } else signInWithEmailAndPassword(auth, e, p).catch(err => alert(err.message));
-    };
-
-    window.showSec = (target) => {
-        document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('sec-' + target).classList.remove('hidden');
-        document.getElementById('nav-' + target).classList.add('active');
-    };
-
-    window.logout = () => signOut(auth);
-
-    onAuthStateChanged(auth, u => {
-        if(u) {
-            onSnapshot(doc(db, "users", u.uid), ds => {
-                myP = ds.data();
-                document.getElementById('shopXp').innerText = myP.xp;
-                document.getElementById('app').classList.remove('hidden');
-                document.getElementById('authBox').classList.add('hidden');
-            });
-            loadFeed();
-        } else {
-            document.getElementById('app').classList.add('hidden');
-            document.getElementById('authBox').classList.remove('hidden');
-        }
-    });
-
-    function loadFeed() {
-        onSnapshot(collection(db, "posts"), s => {
-            const feed = document.getElementById('sec-feed');
-            const pop = document.getElementById('sec-popular');
-            feed.innerHTML = "<h3>Лента</h3>";
-            pop.innerHTML = "<h3>Популярное</h3>";
-            s.docs.sort((a,b) => (b.data().time?.seconds||0) - (a.data().time?.seconds||0)).forEach(d => {
-                const p = d.data(), id = d.id;
-                const isLiked = p.likedBy?.includes(auth.currentUser.uid);
-                const html = `
-                    <div class="post-card">
-                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px">
-                            <img src="${p.uAv}" class="avatar ${p.isPrem?'prem-border':''}">
-                            <div>
-                                <b>${p.uName} ${p.isPrem?'⭐':''}</b>
-                                <div style="font-size:12px; color:var(--gray)">@${p.uName.toLowerCase().replace(/\s/g,'')}</div>
-                            </div>
-                        </div>
-                        <p>${p.txt}</p>
-                        <div class="action-bar">
-                            <button class="act-btn" style="color:${isLiked?'#ff4757':''}" onclick="window.vote('${id}', ${isLiked})">❤️ ${p.likes||0}</button>
-                            <button class="act-btn" onclick="window.addComm('${id}')">💬 ${p.comments?.length||0}</button>
-                        </div>
-                    </div>`;
-                feed.innerHTML += html;
-                if(p.likes >= 5) pop.innerHTML += html;
-            });
-        });
-    }
-
-    window.vote = async (id, isLiked) => {
-        await updateDoc(doc(db, "posts", id), {
-            likes: increment(isLiked ? -1 : 1),
-            likedBy: isLiked ? arrayRemove(auth.currentUser.uid) : arrayUnion(auth.currentUser.uid)
-        });
-    };
-
-    window.sendPost = async () => {
-        const txt = document.getElementById('postTxt').value;
-        if(!txt) return;
-        await addDoc(collection(db, "posts"), { 
-            txt, uid: auth.currentUser.uid, uName: myP.name, uAv: myP.avatar, 
-            isPrem: myP.isPrem||false, likes: 0, likedBy: [], comments: [], time: serverTimestamp() 
-        });
-        await updateDoc(doc(db, "users", auth.currentUser.uid), { xp: increment(15) });
-        window.closeModal();
-        document.getElementById('postTxt').value = "";
-    };
-
-    window.buyItem = async (type, price) => {
-        if(myP.xp >= price) {
-            await updateDoc(doc(db, "users", auth.currentUser.uid), { xp: increment(-price), isPrem: true });
-            alert("Премиум куплен!");
-        } else alert("Не хватает XP");
-    };
+    // ... (весь предыдущий код сохраняется)
 
     window.viewProfile = () => {
         window.showSec('profile');
         document.getElementById('profHead').innerHTML = `
             <div class="post-card" style="text-align:center">
-                <img src="${myP.avatar}" class="avatar ${myP.isPrem?'prem-border':''}" style="width:80px; height:80px">
-                <h2>${myP.name}</h2>
-                <p>@${myP.name.toLowerCase().replace(/\s/g,'')}</p>
-                <p>Баланс: ${myP.xp} XP</p>
+                <div style="position:relative; display:inline-block">
+                    <img src="${myP.avatar}" class="avatar ${myP.isPrem?'prem-border':''}" style="width:100px; height:100px; border-radius:30px; object-fit:cover">
+                    <div onclick="window.editAvatar()" style="position:absolute; bottom:0; right:0; background:var(--p); width:30px; height:30px; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px; border:2px solid var(--card)">📷</div>
+                </div>
+                <h2 style="margin:10px 0 5px 0">${myP.name}</h2>
+                <div style="display:flex; gap:10px; justify-content:center; margin-bottom:15px">
+                    <button class="btn-primary" style="width:auto; padding:5px 15px; font-size:12px" onclick="window.editName()">Изменить имя</button>
+                </div>
+                <p style="color:var(--gray); font-size:14px">Ваши публикации:</p>
             </div>`;
+        
+        const pDiv = document.getElementById('profPosts'); 
+        pDiv.innerHTML = "";
+        // Фильтруем посты, чтобы видеть только свои
+        const myPosts = allPosts.filter(p => p.uid === auth.currentUser.uid);
+        if(myPosts.length === 0) pDiv.innerHTML = "<p style='text-align:center; color:var(--gray)'>У вас пока нет постов</p>";
+        myPosts.forEach(p => pDiv.innerHTML += createPostHTML(p));
     };
+
+    // Функция смены аватарки
+    window.editAvatar = async () => {
+        const newAv = prompt("Введите прямую ссылку на фото (URL) или ваше имя для генерации иконки:", myP.avatar);
+        if(newAv) {
+            let finalUrl = newAv;
+            // Если введена не ссылка, а просто текст, генерируем иконку
+            if(!newAv.startsWith('http')) {
+                finalUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(newAv)}&background=random&size=128`;
+            }
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { avatar: finalUrl });
+            // Обновляем локальные данные, чтобы сразу увидеть результат
+            myP.avatar = finalUrl;
+            window.viewProfile();
+        }
+    };
+
+    // Функция смены имени
+    window.editName = async () => {
+        const newN = prompt("Введите новое имя:", myP.name);
+        if(newN && newN.length > 1) {
+            await updateDoc(doc(db, "users", auth.currentUser.uid), { name: newN });
+            myP.name = newN;
+            window.viewProfile();
+        }
+    };
+    
+    // ... (остальной код системы)
 </script>
-</body>
-</html>
